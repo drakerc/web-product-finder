@@ -1,0 +1,37 @@
+version: "3.4"
+services:
+  finder_python:
+    restart: always
+    build:
+      context: ./
+      dockerfile: "python-dockerfile-prod"
+    environment:
+      - "PYTHONUNBUFFERED=1"
+    volumes:
+      - .:/app
+    networks:
+      - finder
+  finder_nginx:
+    restart: always
+    build: ./nginx
+    ports:
+      - "${DOCKER_WEB_PORT}:80"
+      - "${DOCKER_WEB_SSL_PORT}:443"
+    volumes:
+      - .:/app
+    depends_on:
+      - finder_python
+    networks:
+      - finder
+  finder_mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - finder
+networks:
+  finder:
+    driver: "bridge"
