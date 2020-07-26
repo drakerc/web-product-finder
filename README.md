@@ -4,27 +4,24 @@ This project is used to store brands and their associated regexes so you can fil
 Allows to create a new brand (or subbrand), add regex rules for it and test them against a pandas dataframe, export brand's rules to a CSV file and just test regex rules against the dataframe without saving them.
 
 # Usage
-After starting the project (refer to Starting the project), visit the Swagger documentation available at http://localhost/api/swagger (or replace localhost with the proper address) to find the available API endpoints
+After starting the project (refer to Starting the project), visit the Swagger documentation available at /api/swagger (e.g. http://localhost/api/swagger) to find the available API endpoints
 
 Here are some of the most important endpoints. Please consult the Swagger documentation to find out what each endpoints expects to receive and what it returns:
 
-* http://localhost/api/v1/brand/ - you can create a new brand instance (POST) or it returns all created brands (GET)
-* http://localhost/api/v1/brand/<brand_id> (e.g. http://localhost/api/v1/brand/1) - read the details of a brand, delete it, or edit
-* http://localhost/api/v1/brand/<brand_id>/export-rules (e.g. http://localhost/api/v1/brand/1/export-rules) - export the regexes of a brand (to CSV) (POST)
-* http://localhost/api/v1/brand/<brand_id>/regex (e.g. http://localhost/api/v1/brand/1/regex) - get the list of brand's regexes (GET) or create a new regex (POST)
-* http://localhost/api/v1/brand/<brand_id>/regex/<regex_id> (e.g. http://localhost/api/v1/brand/1/regex/1) - read the details of a regex, delete it or edit (GET, DELETE or PUT)
-* http://localhost/api/v1/brand/<brand_id>/regex/<regex_id>/search-regex (e.g. http://localhost/api/v1/brand/1/regex/1/search-regex) - find products that match the saved regex (GET)
-* http://localhost/api/v1/search-regex (e.g. http://localhost/api/v1/search-regex) - find products that match the POSTed regex without saving it (POST)
-
-
-
-
+* /api/v1/brand/ - you can create a new brand instance (POST) or it returns all created brands (GET)
+* /api/v1/brand/<brand_id> (e.g. http://localhost/api/v1/brand/1) - read the details of a brand, delete it, or edit
+* /api/v1/brand/<brand_id>/export-rules (e.g. http://localhost/api/v1/brand/1/export-rules) - export the regexes of a brand (to CSV) (POST)
+* /api/v1/brand/<brand_id>/regex (e.g. http://localhost/api/v1/brand/1/regex) - get the list of brand's regexes (GET) or create a new regex (POST)
+* /api/v1/brand/<brand_id>/regex/<regex_id> (e.g. http://localhost/api/v1/brand/1/regex/1) - read the details of a regex, delete it or edit (GET, DELETE or PUT)
+* /api/v1/brand/<brand_id>/regex/<regex_id>/search-regex (e.g. http://localhost/api/v1/brand/1/regex/1/search-regex) - find products that match the saved regex (GET)
+* /api/v1/search-regex (e.g. http://localhost/api/v1/search-regex) - find products that match the POSTed regex without saving it (POST)
 
 
 # Implementation details
-Created using Django REST Framework. Containerized using docker-compose.
-Uses SQLite on dev environment and MySQL on production env.
-Documentation (swagger) created using drf-yasg.
+Created using Django REST Framework - it's a well known, well documented framework. I'm currently starting to use it in some projects, so I wanted to polish my skills a bit by using it here.
+Containerized using docker-compose (industry standard).
+Uses SQLite on dev environment and MySQL on production env. SQLite should be fast enough during the development, and the production uses MySQL - industry standard.
+Documentation (swagger) created using drf-yasg. It automatically (except for some APIView endpoints) generates Swagger documentation.
 
 ### Implementation notes
 This project does not have any front-end (yet) as I assume that Swagger/DRF's panel should be enough to test it.
@@ -45,10 +42,11 @@ In the future, if needed, it's pretty easy to separate these services into micro
 
 ### Starting the project
 * Install docker and docker-compose (I recommend this tutorial: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04)
+* Download and extract the project (or use `git clone`).
 * Copy the gzip data file to `static/data/UK_outlet_meal.parquet.gzip` (or use a different path, but remember to edit it in the `.env` file)
 * Copy `.env.dist` to `.env` (`cp .env.dist .env`) (and modify the database/ports variables if necessary)
 * Execute `docker-compose build`
-* Execute `docker-compose up -d` (or `docker-compose -f docker-compose.prod.yml up -d` in deployment environment)
+* Execute `docker-compose up -d` (or `docker-compose -f docker-compose.prod.yml up -d` in production environment)
 * Apply migrations by using `docker-compose exec finder_python python manage.py migrate` (on production, use `docker-compose -f docker-compose.prod.yml exec finder_python python manage.py migrate --settings=home.settings.prod`)
 * If there's a problem with static files (Django's panel does build properly, especially on production), use `docker-compose -f docker-compose.prod.yml exec finder_python python manage.py collectstatic --noinput`
 * The project should be available at http://localhost/api
