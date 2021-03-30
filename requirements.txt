@@ -1,6 +1,6 @@
 pandas==1.0.5
 tornado==6.0.4
-Django==3.0.8
+Django==3.0.12
 django-allauth==0.42.0
 django-cors-headers==3.4.0
 django-rest-auth==0.9.5
